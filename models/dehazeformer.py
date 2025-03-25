@@ -394,7 +394,7 @@ class DehazeFormer(nn.Module):
 
 		# split image into non-overlapping patches
 		self.patch_embed = PatchEmbed(
-			patch_size=1, in_chans=in_chans, embed_dim=embed_dims[0], kernel_size=3)
+			patch_size=1, in_chans=in_chans, embed_dim=embed_dims[0], kernel_size=1)
 
 		# backbone
 		self.layer1 = BasicLayer(network_depth=sum(depths), dim=embed_dims[0], depth=depths[0],
@@ -490,7 +490,8 @@ class DehazeFormer(nn.Module):
     		H, W = x.shape[2:]  
     		x = self.check_image_size(x)
     		feat = self.forward_features(x)
-    		K, B = torch.split(feat, (1, 3), dim=1)
+    		#K, B = torch.split(feat, (1, 3), dim=1)
+		K, B = torch.split(feat, (1, feat.shape[1] - 1), dim=1)
 
     		x = K * x - B + x
     		return x[:, :, :H, :W]
