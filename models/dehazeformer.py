@@ -310,7 +310,7 @@ class BasicLayer(nn.Module):
 
 
 class PatchEmbed(nn.Module):
-	def __init__(self, patch_size=4, in_chans=3, embed_dim=96, kernel_size=None):
+	def __init__(self, patch_size=4, in_chans=1, embed_dim=96, kernel_size=None):
 		super().__init__()
 		self.in_chans = in_chans
 		self.embed_dim = embed_dim
@@ -327,7 +327,7 @@ class PatchEmbed(nn.Module):
 
 
 class PatchUnEmbed(nn.Module):
-	def __init__(self, patch_size=4, out_chans=3, embed_dim=96, kernel_size=None):
+	def __init__(self, patch_size=4, out_chans=1, embed_dim=96, kernel_size=None):
 		super().__init__()
 		self.out_chans = out_chans
 		self.embed_dim = embed_dim
@@ -377,7 +377,7 @@ class SKFusion(nn.Module):
 
 
 class DehazeFormer(nn.Module):
-	def __init__(self, in_chans=3, out_chans=4, window_size=8,
+	def __init__(self, in_chans=1, out_chans=1, window_size=8,
 				 embed_dims=[24, 48, 96, 48, 24],
 				 mlp_ratios=[2., 4., 4., 2., 2.],
 				 depths=[16, 16, 16, 8, 8],
