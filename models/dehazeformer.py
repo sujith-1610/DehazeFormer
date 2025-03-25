@@ -480,7 +480,15 @@ class DehazeFormer(nn.Module):
 		return x
 
 	def forward(self, x):
-		H, W = x.shape[2:]
+		#H, W = x.shape[2:]
+		if x.ndim == 4:  # Expected shape: (Batch, Channels, Height, Width)
+    			B, C, H, W = x.shape
+		elif x.ndim == 3:  # If batch dimension is missing, add it
+    			C, H, W = x.shape
+    			B = 1
+    			x = x.unsqueeze(0)  # Add batch dimension
+		else:
+    			raise ValueError(f"Unexpected input shape: {x.shape}")
 		x = self.check_image_size(x)
 
 		feat = self.forward_features(x)
