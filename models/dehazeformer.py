@@ -489,8 +489,8 @@ class DehazeFormer(nn.Module):
     		x = self.check_image_size(x)
     		feat = self.forward_features(x)
     		#K, B = torch.split(feat, (1, 3), dim=1)
-		K, B = torch.split(feat, (1, feat.shape[1] - 1), dim=1)
-
+		#K, B = torch.split(feat, (1, feat.shape[1] - 1), dim=1)
+		K,B = torch.split(fear,(1,feat.shape[1]-1),dim=1)
     		x = K * x - B + x
     		return x[:, :, :H, :W]
 
