@@ -480,23 +480,32 @@ class DehazeFormer(nn.Module):
 		return x
 
 	def forward(self, x):
-		#H, W = x.shape[2:]
-		if x.ndim == 4:  # Expected shape: (Batch, Channels, Height, Width)
-    			B, C, H, W = x.shape
-		elif x.ndim == 3:  # If batch dimension is missing, add it
-    			C, H, W = x.shape
-    			B = 1
-    			x = x.unsqueeze(0)  # Add batch dimension
-		else:
-    			raise ValueError(f"Unexpected input shape: {x.shape}")
-		x = self.check_image_size(x)
+    		if x.ndim == 4:  # Expected shape: (Batch, Channels, Height, Width)
+        		B, C, H, W = x.shape
+    		elif x.ndim == 3:  # If batch dimension is missing, add it
+        		C, H, W = x.shape
+        		B = 1
+        		x = x.unsqueeze(0)  # Add batch dimension
+    		else:
+        		raise ValueError(f"Unexpected input shape: {x.shape}")
 
-		feat = self.forward_features(x)
-		K, B = torch.split(feat, (1, 3), dim=1)
+    		x = self.check_image_size(x)
 
-		x = K * x - B + x
-		x = x[:, :, :H, :W]
-		return x
+    		feat = self.forward_features(x)
+
+    		# ✅ Debugging Print
+    		print(f"Feature map shape: {feat.shape}")  # <== Add this to check shape
+
+    		# ✅ Fix the split (Ensure at least 4 channels exist)
+    		if feat.shape[1] >= 4:
+        		K, B = torch.split(feat, (1, 3), dim=1)
+    		else:
+        		raise ValueError(f"Cannot split feature map with shape: {feat.shape}")
+
+    		x = K * x - B + x
+    		x = x[:, :, :H, :W]
+    		return x
+
 
 
 def dehazeformer_t():
